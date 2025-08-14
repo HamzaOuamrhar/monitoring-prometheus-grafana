@@ -1,0 +1,58 @@
+services:
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - prometheus-grafana-net
+    depends_on:
+      - nginx
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - grafana-certs:/etc/grafana/certs
+      - certs-ca:/etc/grafana/certs/ca
+      - grafana-conf:/usr/share/grafana/conf/provisioning/datasources
+    networks:
+      - prometheus-grafana-net
+    depends_on:
+      - prometheus
+
+  nginx:
+    image: nginx:transcendence
+    build:
+      context: nginx
+      dockerfile: Dockerfile
+    container_name: prometheus-proxy
+    networks:
+    - prometheus-grafana-net
+    env_file:
+      - .env
+    volumes:
+      - certs:/certs
+      - grafana-certs:/certs/grafana-certs
+      - certs-ca:/certs/ca
+      - grafana-conf:/usr/share/grafana/conf/provisioning/datasources
+
+volumes:
+  prometheus_data:
+  grafana_data:
+  certs:
+  grafana-certs:
+  certs-ca:
+  grafana-conf:
+
+
+networks:
+  prometheus-grafana-net:
+
