@@ -42,41 +42,38 @@ rm certs/ca/ca.key
 envsubst < nginx.conf > /etc/nginx/nginx.conf
 
 
-
-# GRAFANA PROVISIONING
-
+# create prometheus data_source
 
 
-CERT_DIR="certs/grafana-certs"
-CA_DIR="certs/ca"
-OUTPUT_DIR="/usr/share/grafana/conf/provisioning/datasources"
-OUTPUT_FILE="$OUTPUT_DIR/prometheus.yaml"
+echo "Waiting for Grafana to start..."
+until curl -s "http://grafana:3000/api/health" | grep -q '"database": "ok"'; do
+  sleep 3
+done
 
 
 
-mkdir -p "$OUTPUT_DIR"
+CA_CERT=$(awk '{printf "%s\\n", $0}' certs/ca/ca.crt)
+CLIENT_CERT=$(awk '{printf "%s\\n", $0}' certs/grafana-certs/grafana.crt)
+CLIENT_KEY=$(awk '{printf "%s\\n", $0}' certs/grafana-certs/grafana.key)
 
-
-
-cat > "$OUTPUT_FILE" <<EOF
-apiVersion: 1
-datasources:
-  - name: Prometheus
-    type: prometheus
-    access: proxy
-    url: https://prometheus-proxy:443
-    jsonData:
-      tlsAuth: true
-      tlsAuthWithCACert: true
-      tlsSkipVerify: false
-    secureJsonData:
-      tlsCACert: |
-$(sed 's/^/        /' "$CA_DIR/ca.crt")
-      tlsClientCert: |
-$(sed 's/^/        /' "$CERT_DIR/grafana.crt")
-      tlsClientKey: |
-$(sed 's/^/        /' "$CERT_DIR/grafana.key")
-EOF
+curl -X POST http://admin:admin@grafana:3000/api/datasources \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"name\": \"Prometheus\",
+    \"type\": \"prometheus\",
+    \"url\": \"https://prometheus-proxy:443\",
+    \"access\": \"proxy\",
+    \"jsonData\": {
+      \"tlsAuth\": true,
+      \"tlsAuthWithCACert\": true,
+      \"tlsSkipVerify\": false
+    },
+    \"secureJsonData\": {
+      \"tlsCACert\": \"$CA_CERT\",
+      \"tlsClientCert\": \"$CLIENT_CERT\",
+      \"tlsClientKey\": \"$CLIENT_KEY\"
+    }
+  }"
 
 
 
