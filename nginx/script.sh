@@ -39,7 +39,7 @@ openssl x509 -req -in certs/grafana-certs/grafana.csr -CA certs/ca/ca.crt -CAkey
 
 
 rm certs/ca/ca.key
-envsubst < nginx.conf > /etc/nginx/nginx.conf
+# envsubst < nginx.conf > /etc/nginx/nginx.conf
 
 
 # create prometheus data_source
@@ -56,7 +56,7 @@ CA_CERT=$(awk '{printf "%s\\n", $0}' certs/ca/ca.crt)
 CLIENT_CERT=$(awk '{printf "%s\\n", $0}' certs/grafana-certs/grafana.crt)
 CLIENT_KEY=$(awk '{printf "%s\\n", $0}' certs/grafana-certs/grafana.key)
 
-curl -X POST http://admin:admin@grafana:3000/api/datasources \
+curl -X POST http://${GRAFANA_USER}:${GRAFANA_PASSWORD}@grafana:3000/api/datasources \
   -H "Content-Type: application/json" \
   -d "{
     \"name\": \"Prometheus\",

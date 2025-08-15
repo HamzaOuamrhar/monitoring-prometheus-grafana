@@ -11,13 +11,11 @@ services:
     networks:
       - prometheus-grafana-net
     depends_on:
-      - nginx
+      - prometheus-proxy
 
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
-    ports:
-      - "3000:3000"
     volumes:
       - grafana_data:/var/lib/grafana
       - grafana-certs:/etc/grafana/certs
@@ -27,9 +25,22 @@ services:
       - prometheus-grafana-net
     depends_on:
       - prometheus
+    environment:
+      - GF_SERVER_ROOT_URL=https://localhost:3000
+      - GF_SERVER_SERVE_FROM_SUB_PATH=false
+      - GF_SECURITY_COOKIE_SAMESITE=lax
+      - GF_SECURITY_COOKIE_SECURE=true
+      - GF_SERVER_PROTOCOL=http
+      - GF_SERVER_HTTP_PORT=3000
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+      - GF_AUTH_PROXY_ENABLED=false
+      - GF_USERS_ALLOW_SIGN_UP=false
 
-  nginx:
-    image: nginx:transcendence
+
+
+  prometheus-proxy:
+    image: prometheus-proxy
     build:
       context: nginx
       dockerfile: Dockerfile
@@ -38,6 +49,8 @@ services:
     - prometheus-grafana-net
     env_file:
       - .env
+    ports:
+      - "3000:3000"
     volumes:
       - certs:/certs
       - grafana-certs:/certs/grafana-certs
