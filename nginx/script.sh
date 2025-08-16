@@ -16,7 +16,7 @@ openssl req -x509 -new -nodes -key certs/ca/ca.key -sha256 -days 3650 \
 
 
 openssl genrsa -out certs/server-certs/server.key 2048
-openssl req -new -key certs/server-certs/server.key -subj "/CN=prometheus-proxy" -out certs/server-certs/server.csr \
+openssl req -new -key certs/server-certs/server.key -subj "/CN=proxy" -out certs/server-certs/server.csr \
 -config openssl.cnf
 
 
@@ -61,7 +61,7 @@ curl -X POST http://${GRAFANA_USER}:${GRAFANA_PASSWORD}@grafana:3000/api/datasou
   -d "{
     \"name\": \"Prometheus\",
     \"type\": \"prometheus\",
-    \"url\": \"https://prometheus-proxy:443\",
+    \"url\": \"https://proxy:443\",
     \"access\": \"proxy\",
     \"jsonData\": {
       \"tlsAuth\": true,

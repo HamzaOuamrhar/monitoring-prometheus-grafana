@@ -18,6 +18,6 @@ g:
 	docker exec -it grafana bash
 
 p:
-	docker exec -it prometheus-proxy bash
+	docker exec -it proxy bash
 
 re: clean all

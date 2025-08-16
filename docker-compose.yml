@@ -11,7 +11,7 @@ services:
     networks:
       - prometheus-grafana-net
     depends_on:
-      - prometheus-proxy
+      - proxy
 
   grafana:
     image: grafana/grafana:latest
@@ -39,12 +39,12 @@ services:
 
 
 
-  prometheus-proxy:
-    image: prometheus-proxy
+  proxy:
+    image: proxy
     build:
       context: nginx
       dockerfile: Dockerfile
-    container_name: prometheus-proxy
+    container_name: proxy
     networks:
     - prometheus-grafana-net
     env_file:

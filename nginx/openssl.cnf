@@ -6,10 +6,10 @@ req_extensions     = req_ext
 distinguished_name = dn
 
 [ dn ]
-CN = prometheus-proxy
+CN = proxy
 
 [ req_ext ]
 subjectAltName = @alt_names
 
 [ alt_names ]
-DNS.1 = prometheus-proxy
+DNS.1 = proxy
