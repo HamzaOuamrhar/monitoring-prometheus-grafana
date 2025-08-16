@@ -57,6 +57,14 @@ services:
       - certs-ca:/certs/ca
       - grafana-conf:/usr/share/grafana/conf/provisioning/datasources
 
+  node-exporter:
+    image: bitnami/node-exporter:1.9.1-debian-12-r12
+    container_name: node-exporter
+    network_mode: host
+    pid: host
+    volumes:
+      - /:/host:ro
+
 volumes:
   prometheus_data:
   grafana_data:

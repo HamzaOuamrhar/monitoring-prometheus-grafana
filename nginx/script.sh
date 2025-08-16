@@ -76,5 +76,9 @@ curl -X POST http://${GRAFANA_USER}:${GRAFANA_PASSWORD}@grafana:3000/api/datasou
   }"
 
 
+curl -X POST http://${GRAFANA_USER}:${GRAFANA_PASSWORD}@grafana:3000/api/dashboards/db \
+  -H "Content-Type: application/json" \
+  -d @Server-Health-Dashboard.json
+
 
 nginx
