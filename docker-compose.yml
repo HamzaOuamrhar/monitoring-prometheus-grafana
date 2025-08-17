@@ -46,7 +46,7 @@ services:
       dockerfile: Dockerfile
     container_name: proxy
     networks:
-    - prometheus-grafana-net
+      - prometheus-grafana-net
     env_file:
       - .env
     ports:
@@ -64,6 +64,20 @@ services:
     pid: host
     volumes:
       - /:/host:ro
+
+  cadviser:
+    image: cadvisor:monitoring
+    container_name: cadvisor
+    build:
+      context: cadvisor
+      dockerfile: Dockerfile
+    volumes:
+      - /:/rootfs:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - prometheus-grafana-net
 
 volumes:
   prometheus_data:
