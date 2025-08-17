@@ -1,3 +1,5 @@
+# scraping
+
 global:
   scrape_interval: 10s
 
@@ -16,3 +18,16 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
       - targets: ['cadvisor:8080']
+
+
+# alerting
+
+
+rule_files:
+  - "alert_rules.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - "alertmanager:9093"
