@@ -61,7 +61,7 @@ curl -X POST http://${GRAFANA_USER}:${GRAFANA_PASSWORD}@grafana:3000/api/datasou
   -d "{
     \"name\": \"Prometheus\",
     \"type\": \"prometheus\",
-    \"url\": \"https://proxy:443\",
+    \"url\": \"https://proxy:9090\",
     \"access\": \"proxy\",
     \"jsonData\": {
       \"tlsAuth\": true,
