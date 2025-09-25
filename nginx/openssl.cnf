@@ -6,10 +6,10 @@ req_extensions     = req_ext
 distinguished_name = dn
 
 [ dn ]
-CN = proxy
+CN = nginx
 
 [ req_ext ]
 subjectAltName = @alt_names
 
 [ alt_names ]
-DNS.1 = proxy
+DNS.1 = nginx

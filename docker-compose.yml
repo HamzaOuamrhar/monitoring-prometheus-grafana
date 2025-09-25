@@ -12,7 +12,7 @@ services:
     networks:
       - prometheus-grafana-net
     depends_on:
-      - proxy
+      - nginx
       - alertmanager
 
   alertmanager:
@@ -59,12 +59,12 @@ services:
 
 
 
-  proxy:
-    image: proxy
+  nginx:
+    image: nginx
     build:
       context: nginx
       dockerfile: Dockerfile
-    container_name: proxy
+    container_name: nginx
     networks:
       - prometheus-grafana-net
     env_file:

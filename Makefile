@@ -18,6 +18,6 @@ g:
 	docker exec -it grafana bash
 
 p:
-	docker exec -it proxy bash
+	docker exec -it nginx bash
 
 re: clean all
